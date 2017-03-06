@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import pole from 'pole'
 import { NativeModules, NativeEventEmitter } from 'react-native'
 
 import {
