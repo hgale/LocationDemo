@@ -11,6 +11,14 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import <CoreLocation/CoreLocation.h>
+
+
+@interface AppDelegate()<CLLocationManagerDelegate>
+
+@property (nonatomic, strong) CLLocationManager *locationManager;
+
+@end
 
 @implementation AppDelegate
 
@@ -31,7 +39,35 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+
+  self.locationManager = [[CLLocationManager alloc] init];
+  self.locationManager.pausesLocationUpdatesAutomatically = NO;
+  self.locationManager.allowsBackgroundLocationUpdates = YES;
+  self.locationManager.delegate=self;
+  self.locationManager.desiredAccuracy=kCLLocationAccuracyBest;
+  
+  if([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)])
+  {
+    [self.locationManager requestAlwaysAuthorization];
+  }
+  
   return YES;
+}
+
+
+#pragma - CLLocationManagerDelegate
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+  if(status==kCLAuthorizationStatusAuthorizedAlways)
+  {
+    [self.locationManager startUpdatingLocation];
+  }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
 }
 
 @end

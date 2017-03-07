@@ -29,7 +29,7 @@ export default class LocationDemo extends Component {
       pollLocation: pole({interval: LOCATION_POLL_FREQUENCY}, (callback) => {
         let now =  new Date()
         let data = JSON.stringify({'lat': 20, 'long': 20, 'time': now })
-        fetch('http://localhost:8080', {
+        fetch('http://192.168.107.24:8080', {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
