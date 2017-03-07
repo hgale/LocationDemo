@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import pole from 'pole'
+import BackgroundTimer from 'react-native-background-timer'
+
 import {
   AppRegistry,
   StyleSheet,
@@ -24,28 +25,28 @@ export default class LocationDemo extends Component {
   }
 
   componentDidMount () {
+    const intervalId = BackgroundTimer.setInterval(() => {
+      let now =  new Date()
+      let data = JSON.stringify({'lat': 20, 'long': 20, 'time': now })
+      fetch('http://192.168.107.24:8080', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: data
+      })
+      this.updateTime(now)
+    }, LOCATION_POLL_FREQUENCY)
 
     this.setState({
-      pollLocation: pole({interval: LOCATION_POLL_FREQUENCY}, (callback) => {
-        let now =  new Date()
-        let data = JSON.stringify({'lat': 20, 'long': 20, 'time': now })
-        fetch('http://localhost:8080', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: data
-        })
-        this.updateTime(now)
-        callback()
-      })
+      pollLocation:intervalId
     })
   }
 
   componentWillUnmount () {
     if (this.state.pollLocation) {
-      this.state.pollLocation.cancel()
+      BackgroundTimer.clearTimeout(this.state.pollLocation)
     }
   }
 
